@@ -22,7 +22,7 @@ import org.deckfour.xes.model.XTrace;
 public class CrossOrganizationInteractionRelationDiscovery {
 
 	// discover interaction relation among activities that belong to different organizations. 
-	//
+	//发现属于不同组织的活动之间的交互关系。
 	public static HashSet<CrossOrganizationInteraction> discoverCrossOrganizationInteractions(OrganizationConfig orgConfig, XLog originalLog)
 	{
 //		System.out.println("33333333333333333333333333");
@@ -36,14 +36,14 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				
 		boolean flag=true;
 			//get the activity set to sub log mapping 
-			//
+			//将活动设置为子日志映射
 		HashMap<HashSet<String>, XLog> ActivitySet2OrgLog = new HashMap<>();
 		
 		for(XTrace trace: originalLog) {
 			for(XEvent event: trace) {
 				String resource = event.getAttributes().get("resource").toString();       //Resource
-				String messageSent = event.getAttributes().get("Message:Sent").toString();   //
-				String messageRec = event.getAttributes().get("Message:Rec").toString();    //
+				String messageSent = event.getAttributes().get("Message:Sent").toString();   //提取发送的消息
+				String messageRec = event.getAttributes().get("Message:Rec").toString();    ///提取接收的消息
 				String transition = event.getAttributes().get("concept:name").toString();       //Resource
 				String organization = XOrganizationalExtension.instance().extractResource(event);   //Org
 				String[] spiltMessageSent=messageSent.split(",");
@@ -56,26 +56,26 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				List<String> putList1=new ArrayList<>();
 				for(int k=0;k<spiltMessageSent.length;k++) {
 					String mes=spiltMessageSent[k].trim();
-//					System.out.println(""+k+"mes:"+mes);
-					//
-					if (!mes.equals("null")) { //
-						if(AllmessageSent.isEmpty()) {//
+//					System.out.println("第"+k+"个mes:"+mes);
+					//发送消息的实现
+					if (!mes.equals("null")) { //可以提取出不为空信息值    ////可以提取出发送消息的变迁	
+						if(AllmessageSent.isEmpty()) {//第一个变迁添
 							putList.add(mes);
 							AllmessageSent.put(transition, putList);
 							}
 						else {
-								if(!AllmessageSent.containsKey(transition) || spiltMessageSent.length>1) {//
+								if(!AllmessageSent.containsKey(transition) || spiltMessageSent.length>1) {//有一组的情况
 									putList.add(mes);
 									AllmessageSent.put(transition, putList);
 								}
 							}
-//								 System.out.println("AllmessageSent:"+AllmessageSent);
+//								 System.out.println("AllmessageSent遍历后:"+AllmessageSent);
 					 }
 				 }
 				for(int m=0;m<spiltMessageRec.length;m++) {
 					String msr=spiltMessageRec[m].trim();
-					//
-					if (!msr.equals("null")){         // 
+					//收到消息的实现
+					if (!msr.equals("null")){         //可以提取出不为空信息值    ////可以提取出收到消息的变迁 
 						if(AllmessageRec.isEmpty()) {
 							putList1.add(msr);
 							AllmessageRec.put(transition, putList1);
@@ -85,21 +85,21 @@ public class CrossOrganizationInteractionRelationDiscovery {
 									AllmessageRec.put(transition, putList1);
 								}
 							}
-//							System.out.println("AllmessageRec:"+AllmessageRec);
+//							System.out.println("AllmessageRec遍历后:"+AllmessageRec);
 					 }
 				 }
-				/*-------------------------------------------------------------*/
+				/*-----------------------------------------资源--------------------*/
 				List<String> putRes=new ArrayList<>();
 				/////////////////////////////////////////////////////// 
 				for(int k=0;k<spiltRes.length;k++) {
 					String res = spiltRes[k].trim();
-					//
-					if (!res.equals("null")) {         //
-						if(PublicRes.isEmpty()) {//
+					//资源的实现
+					if (!res.equals("null")) {         //可以提取出不为空资源值    ////资源
+						if(PublicRes.isEmpty()) {//第一个变迁添加
 							putRes.add(res);
 							PublicRes.put(transition, putRes);
 							}else {
-								if(!PublicRes.containsKey(transition) || spiltRes.length>1) {//
+								if(!PublicRes.containsKey(transition) || spiltRes.length>1) {//有一组的情况
 									putRes.add(res);
 									PublicRes.put(transition, putRes);
 								}
@@ -109,16 +109,16 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				}//trace
 			}//log
 
-//		System.out.println("AllmessageSent:"+AllmessageSent);
+//		System.out.println("AllmessageSent遍历后:"+AllmessageSent);
 //		System.out.println("****************************************");
-//		System.out.println("AllmessageRec:"+AllmessageRec);
+//		System.out.println("AllmessageRec遍历后:"+AllmessageRec);
 		
-		Set set = AllmessageSent.keySet();    //
-		Set set0 = AllmessageRec.keySet();   //
-		Set setres1 = PublicRes.keySet();   //
-		Set setres2 = PublicRes.keySet();   //
+		Set set = AllmessageSent.keySet();    //所有发送消息的变迁
+		Set set0 = AllmessageRec.keySet();   //所有接收消息的变迁
+		Set setres1 = PublicRes.keySet();   //资源的变迁
+		Set setres2 = PublicRes.keySet();   //资源的变迁
 
-/*--------------------------------------------------------------------------------------------------------*/
+/*----------资源连接----------------------------------------------------------------------------------------------*/
 		for(Iterator iterRes1 = setres1.iterator(); iterRes1.hasNext();){
 			String transition1 = (String)iterRes1.next();
 			List<String> value1 = PublicRes.get(transition1);    
@@ -134,7 +134,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 						//create an interaction
 						OrgActivity sourceOrgActivity = new OrgActivity(transition1, sourceActivityOrg);
 						OrgActivity targetOrgActivity = new OrgActivity(transition2, targetActivityOrg);
-						////
+						////改的
 //						OrgResource sourceOrgResource = new OrgResource(transition1, sourceActivityOrg, value1.toString());
 //						OrgResource targetOrgResource = new OrgResource(transition2, targetActivityOrg, value1.toString());
 								
@@ -150,8 +150,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 			}
 		}
 
-		// Eric Verbeek: Removed unmappable characters from below regex. Should be Utf-8.
-		String regEx ="[\n`~!@#$%^&*()+=|{}':;'\\[\\].<>/?~@#%&*()+|{} ]";
+		String regEx ="[\n`~!@#$%^&*()+=|{}':;'\\[\\].<>/?~！@#￥%……&*()——+|{}【】‘；：”“’。， 、？]";
     	String aa = " ";
     	String regExSp = ",";
         Pattern psp = Pattern.compile(regExSp);
@@ -177,12 +176,12 @@ public class CrossOrganizationInteractionRelationDiscovery {
 					if((valueRec.size()==1)) {
 						if(value.equals(valueRec)) {
 							//get the source and target of each relation
-							//
+							//获取每个关系的来源和目标
 							String sourceActivityOrg = orgConfig.getOrganization4Activity(transition);
 							String targetActivityOrg = orgConfig.getOrganization4Activity(transitionRec);
 							
 							//check the belonging organization of them, if they are different, then create an interaction.
-							//
+							//检查它们的所属组织,如果它们不同,则创建一个交互。 
 							if(sourceActivityOrg!=null && targetActivityOrg!=null
 									&& !sourceActivityOrg.equals(targetActivityOrg)){
 								//create an interaction
@@ -210,7 +209,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 							if(value.get(0).equals(valueRec.get(i))) {
 //								System.out.println("***************************");
 								//get the source and target of each relation
-								//
+								//获取每个关系的来源和目标
 								String sourceActivityOrg = orgConfig.getOrganization4Activity(transition);
 								String targetActivityOrg = orgConfig.getOrganization4Activity(transitionRec);
 
@@ -218,7 +217,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 //								System.out.println("transitionRec:"+transitionRec);
 								
 								//check the belonging organization of them, if they are different, then create an interaction.
-								// 
+								//检查它们的所属组织,如果它们不同,则创建一个交互。 
 								if(sourceActivityOrg!=null && targetActivityOrg!=null
 										&& !sourceActivityOrg.equals(targetActivityOrg)){
 									//create an interaction
@@ -247,12 +246,12 @@ public class CrossOrganizationInteractionRelationDiscovery {
 						if((valueRec.size()==1)) {
 							if(valueRec.get(0).equals(value.get(i))) {
 								//get the source and target of each relation
-								//
+								//获取每个关系的来源和目标
 								String sourceActivityOrg = orgConfig.getOrganization4Activity(transition);
 								String targetActivityOrg = orgConfig.getOrganization4Activity(transitionRec);
 								
 								//check the belonging organization of them, if they are different, then create an interaction.
-								// 
+								//检查它们的所属组织,如果它们不同,则创建一个交互。 
 								if(sourceActivityOrg!=null && targetActivityOrg!=null
 										&& !sourceActivityOrg.equals(targetActivityOrg)){
 									//create an interaction
