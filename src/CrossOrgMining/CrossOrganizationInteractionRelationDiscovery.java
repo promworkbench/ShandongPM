@@ -56,7 +56,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				List<String> putList1=new ArrayList<>();
 				for(int k=0;k<spiltMessageSent.length;k++) {
 					String mes=spiltMessageSent[k].trim();
-//					System.out.println(""+k+"¸mes:"+mes);
+//					System.out.println(""+k+"mes:"+mes);
 					//
 					if (!mes.equals("null")) { //
 						if(AllmessageSent.isEmpty()) {//
@@ -75,7 +75,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				for(int m=0;m<spiltMessageRec.length;m++) {
 					String msr=spiltMessageRec[m].trim();
 					//
-					if (!msr.equals("null")){         //¨ 
+					if (!msr.equals("null")){         // 
 						if(AllmessageRec.isEmpty()) {
 							putList1.add(msr);
 							AllmessageRec.put(transition, putList1);
@@ -150,7 +150,8 @@ public class CrossOrganizationInteractionRelationDiscovery {
 			}
 		}
 
-		String regEx ="[\n`~!@#$%^&*()+=|{}':;'\\[\\].<>/?~£¡@#£¤%¡­¡­&*()¡ª¡ª+|{}¡¾¡¿¡®£»£º¡±¡°¡¯¡££¬ ¡¢£¿]";
+		// Eric Verbeek: Removed unmappable characters from below regex. Should be Utf-8.
+		String regEx ="[\n`~!@#$%^&*()+=|{}':;'\\[\\].<>/?~@#%&*()+|{} ]";
     	String aa = " ";
     	String regExSp = ",";
         Pattern psp = Pattern.compile(regExSp);

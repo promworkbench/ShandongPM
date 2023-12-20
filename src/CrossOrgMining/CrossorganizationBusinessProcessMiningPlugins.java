@@ -81,8 +81,8 @@ public class CrossorganizationBusinessProcessMiningPlugins {
 //				break;
 //				}}
  		for(String org: org2Log.keySet()){
-			/****************************************找到组织混在一起的地方***********************************/
-//			Pattern.compile(regEx).matcher(org).find(); //判断是否有共同活动, 输出为布尔值
+			/***************************************************************************/
+//			Pattern.compile(regEx).matcher(org).find(); //
 			if(Pattern.compile(regEx).matcher(org).find()) {
 				continue;
 				}		
@@ -120,7 +120,7 @@ public class CrossorganizationBusinessProcessMiningPlugins {
 				}
 			});		
 			
-			//check the single entry and single exist property //检查单个条目和单个存在属性
+			//check the single entry and single exist property //
 			Petrinet pn =TransformCrossOrganizationBusinessProcessModel2PetriNet.
 					addingArtifitialSouceandTargetPlaces((Petrinet) objs[0], 
 							(Marking)objs[1], (Marking)objs[2]);
@@ -167,7 +167,7 @@ public class CrossorganizationBusinessProcessMiningPlugins {
 		 }
 						
 		//obtain the combined interactions, the combination may cause some inaccuracy. 
-		//获得组合的交互,组合可能会导致一些不准确。
+		//
 		crossOrgModel.setAllInteractions(interactions);	
 //		}
 						
