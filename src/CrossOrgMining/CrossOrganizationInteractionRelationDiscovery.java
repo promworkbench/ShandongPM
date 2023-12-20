@@ -22,7 +22,7 @@ import org.deckfour.xes.model.XTrace;
 public class CrossOrganizationInteractionRelationDiscovery {
 
 	// discover interaction relation among activities that belong to different organizations. 
-	//·¢ÏÖÊôÓÚ²»Í¬×éÖ¯µÄ»î¶¯Ö®¼äµÄ½»»¥¹ØÏµ¡£
+	//
 	public static HashSet<CrossOrganizationInteraction> discoverCrossOrganizationInteractions(OrganizationConfig orgConfig, XLog originalLog)
 	{
 //		System.out.println("33333333333333333333333333");
@@ -36,14 +36,14 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				
 		boolean flag=true;
 			//get the activity set to sub log mapping 
-			//½«»î¶¯ÉèÖÃÎª×ÓÈÕÖ¾Ó³Éä
+			//
 		HashMap<HashSet<String>, XLog> ActivitySet2OrgLog = new HashMap<>();
 		
 		for(XTrace trace: originalLog) {
 			for(XEvent event: trace) {
 				String resource = event.getAttributes().get("resource").toString();       //Resource
-				String messageSent = event.getAttributes().get("Message:Sent").toString();   //ÌáÈ¡·¢ËÍµÄÏûÏ¢
-				String messageRec = event.getAttributes().get("Message:Rec").toString();    ///ÌáÈ¡½ÓÊÕµÄÏûÏ¢
+				String messageSent = event.getAttributes().get("Message:Sent").toString();   //
+				String messageRec = event.getAttributes().get("Message:Rec").toString();    //
 				String transition = event.getAttributes().get("concept:name").toString();       //Resource
 				String organization = XOrganizationalExtension.instance().extractResource(event);   //Org
 				String[] spiltMessageSent=messageSent.split(",");
@@ -56,26 +56,26 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				List<String> putList1=new ArrayList<>();
 				for(int k=0;k<spiltMessageSent.length;k++) {
 					String mes=spiltMessageSent[k].trim();
-//					System.out.println("µÚ"+k+"¸ömes:"+mes);
-					//·¢ËÍÏûÏ¢µÄÊµÏÖ
-					if (!mes.equals("null")) { //¿ÉÒÔÌáÈ¡³ö²»Îª¿ÕĞÅÏ¢Öµ    ////¿ÉÒÔÌáÈ¡³ö·¢ËÍÏûÏ¢µÄ±äÇ¨	
-						if(AllmessageSent.isEmpty()) {//µÚÒ»¸ö±äÇ¨Ìí
+//					System.out.println(""+k+"¸mes:"+mes);
+					//
+					if (!mes.equals("null")) { //
+						if(AllmessageSent.isEmpty()) {//
 							putList.add(mes);
 							AllmessageSent.put(transition, putList);
 							}
 						else {
-								if(!AllmessageSent.containsKey(transition) || spiltMessageSent.length>1) {//ÓĞÒ»×éµÄÇé¿ö
+								if(!AllmessageSent.containsKey(transition) || spiltMessageSent.length>1) {//
 									putList.add(mes);
 									AllmessageSent.put(transition, putList);
 								}
 							}
-//								 System.out.println("AllmessageSent±éÀúºó:"+AllmessageSent);
+//								 System.out.println("AllmessageSent:"+AllmessageSent);
 					 }
 				 }
 				for(int m=0;m<spiltMessageRec.length;m++) {
 					String msr=spiltMessageRec[m].trim();
-					//ÊÕµ½ÏûÏ¢µÄÊµÏÖ
-					if (!msr.equals("null")){         //¿ÉÒÔÌáÈ¡³ö²»Îª¿ÕĞÅÏ¢Öµ    ////¿ÉÒÔÌáÈ¡³öÊÕµ½ÏûÏ¢µÄ±äÇ¨ 
+					//
+					if (!msr.equals("null")){         //¨ 
 						if(AllmessageRec.isEmpty()) {
 							putList1.add(msr);
 							AllmessageRec.put(transition, putList1);
@@ -85,21 +85,21 @@ public class CrossOrganizationInteractionRelationDiscovery {
 									AllmessageRec.put(transition, putList1);
 								}
 							}
-//							System.out.println("AllmessageRec±éÀúºó:"+AllmessageRec);
+//							System.out.println("AllmessageRec:"+AllmessageRec);
 					 }
 				 }
-				/*-----------------------------------------×ÊÔ´--------------------*/
+				/*-------------------------------------------------------------*/
 				List<String> putRes=new ArrayList<>();
 				/////////////////////////////////////////////////////// 
 				for(int k=0;k<spiltRes.length;k++) {
 					String res = spiltRes[k].trim();
-					//×ÊÔ´µÄÊµÏÖ
-					if (!res.equals("null")) {         //¿ÉÒÔÌáÈ¡³ö²»Îª¿Õ×ÊÔ´Öµ    ////×ÊÔ´
-						if(PublicRes.isEmpty()) {//µÚÒ»¸ö±äÇ¨Ìí¼Ó
+					//
+					if (!res.equals("null")) {         //
+						if(PublicRes.isEmpty()) {//
 							putRes.add(res);
 							PublicRes.put(transition, putRes);
 							}else {
-								if(!PublicRes.containsKey(transition) || spiltRes.length>1) {//ÓĞÒ»×éµÄÇé¿ö
+								if(!PublicRes.containsKey(transition) || spiltRes.length>1) {//
 									putRes.add(res);
 									PublicRes.put(transition, putRes);
 								}
@@ -109,16 +109,16 @@ public class CrossOrganizationInteractionRelationDiscovery {
 				}//trace
 			}//log
 
-//		System.out.println("AllmessageSent±éÀúºó:"+AllmessageSent);
+//		System.out.println("AllmessageSent:"+AllmessageSent);
 //		System.out.println("****************************************");
-//		System.out.println("AllmessageRec±éÀúºó:"+AllmessageRec);
+//		System.out.println("AllmessageRec:"+AllmessageRec);
 		
-		Set set = AllmessageSent.keySet();    //ËùÓĞ·¢ËÍÏûÏ¢µÄ±äÇ¨
-		Set set0 = AllmessageRec.keySet();   //ËùÓĞ½ÓÊÕÏûÏ¢µÄ±äÇ¨
-		Set setres1 = PublicRes.keySet();   //×ÊÔ´µÄ±äÇ¨
-		Set setres2 = PublicRes.keySet();   //×ÊÔ´µÄ±äÇ¨
+		Set set = AllmessageSent.keySet();    //
+		Set set0 = AllmessageRec.keySet();   //
+		Set setres1 = PublicRes.keySet();   //
+		Set setres2 = PublicRes.keySet();   //
 
-/*----------×ÊÔ´Á¬½Ó----------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------*/
 		for(Iterator iterRes1 = setres1.iterator(); iterRes1.hasNext();){
 			String transition1 = (String)iterRes1.next();
 			List<String> value1 = PublicRes.get(transition1);    
@@ -134,7 +134,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 						//create an interaction
 						OrgActivity sourceOrgActivity = new OrgActivity(transition1, sourceActivityOrg);
 						OrgActivity targetOrgActivity = new OrgActivity(transition2, targetActivityOrg);
-						////¸ÄµÄ
+						////
 //						OrgResource sourceOrgResource = new OrgResource(transition1, sourceActivityOrg, value1.toString());
 //						OrgResource targetOrgResource = new OrgResource(transition2, targetActivityOrg, value1.toString());
 								
@@ -176,12 +176,12 @@ public class CrossOrganizationInteractionRelationDiscovery {
 					if((valueRec.size()==1)) {
 						if(value.equals(valueRec)) {
 							//get the source and target of each relation
-							//»ñÈ¡Ã¿¸ö¹ØÏµµÄÀ´Ô´ºÍÄ¿±ê
+							//
 							String sourceActivityOrg = orgConfig.getOrganization4Activity(transition);
 							String targetActivityOrg = orgConfig.getOrganization4Activity(transitionRec);
 							
 							//check the belonging organization of them, if they are different, then create an interaction.
-							//¼ì²éËüÃÇµÄËùÊô×éÖ¯,Èç¹ûËüÃÇ²»Í¬,Ôò´´½¨Ò»¸ö½»»¥¡£ 
+							//
 							if(sourceActivityOrg!=null && targetActivityOrg!=null
 									&& !sourceActivityOrg.equals(targetActivityOrg)){
 								//create an interaction
@@ -209,7 +209,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 							if(value.get(0).equals(valueRec.get(i))) {
 //								System.out.println("***************************");
 								//get the source and target of each relation
-								//»ñÈ¡Ã¿¸ö¹ØÏµµÄÀ´Ô´ºÍÄ¿±ê
+								//
 								String sourceActivityOrg = orgConfig.getOrganization4Activity(transition);
 								String targetActivityOrg = orgConfig.getOrganization4Activity(transitionRec);
 
@@ -217,7 +217,7 @@ public class CrossOrganizationInteractionRelationDiscovery {
 //								System.out.println("transitionRec:"+transitionRec);
 								
 								//check the belonging organization of them, if they are different, then create an interaction.
-								//¼ì²éËüÃÇµÄËùÊô×éÖ¯,Èç¹ûËüÃÇ²»Í¬,Ôò´´½¨Ò»¸ö½»»¥¡£ 
+								// 
 								if(sourceActivityOrg!=null && targetActivityOrg!=null
 										&& !sourceActivityOrg.equals(targetActivityOrg)){
 									//create an interaction
@@ -246,12 +246,12 @@ public class CrossOrganizationInteractionRelationDiscovery {
 						if((valueRec.size()==1)) {
 							if(valueRec.get(0).equals(value.get(i))) {
 								//get the source and target of each relation
-								//»ñÈ¡Ã¿¸ö¹ØÏµµÄÀ´Ô´ºÍÄ¿±ê
+								//
 								String sourceActivityOrg = orgConfig.getOrganization4Activity(transition);
 								String targetActivityOrg = orgConfig.getOrganization4Activity(transitionRec);
 								
 								//check the belonging organization of them, if they are different, then create an interaction.
-								//¼ì²éËüÃÇµÄËùÊô×éÖ¯,Èç¹ûËüÃÇ²»Í¬,Ôò´´½¨Ò»¸ö½»»¥¡£ 
+								// 
 								if(sourceActivityOrg!=null && targetActivityOrg!=null
 										&& !sourceActivityOrg.equals(targetActivityOrg)){
 									//create an interaction
